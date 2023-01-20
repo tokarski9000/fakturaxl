@@ -31,11 +31,17 @@
         <td>
             <select name="invoice-theme" id="invoice-theme">
                 <?php
-                foreach ($invoice_theme_names as $value => $name):
-                ?>
-                            <option value="<?php echo $value; ?>" <?php if ($value === $invoice_theme) esc_html_e('selected=selected'); ?>><?php echo $value.' : '.$name; ?></option>
-                        <?
-                    endforeach;
+                foreach ($invoice_theme_names as $value => $name) :
+                    ?>
+                            <option value="<?php echo $value; ?>" 
+                                <?php
+                                if ($value === $invoice_theme) {
+                                    esc_html_e('selected=selected');
+                                }
+                                ?>
+                            ><?php echo $value.' : '.$name; ?></option>
+                        <?php
+                endforeach;
                 ?>
             </select>
         </td>
@@ -44,11 +50,17 @@
     <tr>
         <th><?php esc_html_e('Company department', $this->plugin_name); ?></th><td><select id="company-department" name="company-department" type="text" value="<?php echo esc_html_e($company_department); ?>">
             <?php
-            foreach ($available_company_departments_array['dzial'] as $value):
-            ?>
-                            <option value="<?php echo $value['id']; ?>" <?php if ($value['id'] === $company_department) esc_html_e('selected=selected'); ?>><?php echo $value['id'].' : '.$value['nazwa']; ?></option>
-                        <?
-                    endforeach;
+            foreach ($available_company_departments_array['dzial'] as $value) :
+                ?>
+                            <option value="<?php echo $value['id']; ?>" 
+                                <?php
+                                if ($value['id'] === $company_department) {
+                                    esc_html_e('selected=selected');
+                                }
+                                ?>
+                            ><?php echo $value['id'].' : '.$value['nazwa']; ?></option>
+                        <?php
+            endforeach;
             ?>
         </select>
     </td>
@@ -60,12 +72,18 @@
         <td>
             <select name="invoice-type" id="invoice-type">
             <?php
-            foreach ($invoice_type_array as $value => $name):
-            ?>
-                            <option value="<?php echo $value; ?>" <?php if ($value == $invoice_type) esc_html_e('selected=selected'); ?>><?php echo $value.' : '.$name; ?></option>
-                        <?
-                    endforeach;
+            foreach ($invoice_type_array as $value => $name) :
                 ?>
+                            <option value="<?php echo $value; ?>" 
+                                <?php
+                                if ($value == $invoice_type) {
+                                    esc_html_e('selected=selected');
+                                }
+                                ?>
+                            ><?php echo $value.' : '.$name; ?></option>
+                        <?php
+            endforeach;
+            ?>
             </select>
         </td>
     </tr>
@@ -76,12 +94,18 @@
         <td>
             <select name="invoice-subtype" id="invoice-subtype">
             <?php
-            foreach ($intovice_subtype_array as $value => $name):
-            ?>
-                            <option value="<?php echo $value; ?>" <?php if ($value == $invoice_subtype) esc_html_e('selected=selected'); ?>><?php echo $value.' : '.$name; ?></option>
-                        <?
-                    endforeach;
+            foreach ($intovice_subtype_array as $value => $name) :
                 ?>
+                            <option value="<?php echo $value; ?>" 
+                                <?php
+                                if ($value == $invoice_subtype) {
+                                    esc_html_e('selected=selected');
+                                }
+                                ?>
+                            ><?php echo $value.' : '.$name; ?></option>
+                        <?php
+            endforeach;
+            ?>
             </select>
         </td>
     </tr>
@@ -94,3 +118,5 @@
 
 </table>
 </form>
+<?php
+

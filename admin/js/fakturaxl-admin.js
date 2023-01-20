@@ -1,14 +1,15 @@
 (function ( $ ) {
-    const queryString = window.location.search;
-    const urlParams   = new URLSearchParams(queryString);
-    const postID      = urlParams.get('post')
     $(window).ready(
         function () {
-            $('#wystaw-fakture').click(
-                function () {
-                    $('#wystaw-fakture').after('<p class="wystawiam-msg">wystawiam...</p>');
+            $('.faktura-xl-issue-invoice').click(
+                function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const _this  = $(this);
+                    const postID = _this.attr('post-id');
+                    _this.after('<div class="issuing-msg lds-dual-ring"></div>');
                     var data = {
-                        'action': 'wystaw_fakture',
+                        'action': 'issue_invoice',
                         'postID': postID,
                         security: ajax_object.nonce
                     }
@@ -19,10 +20,17 @@
                             const data = JSON.parse(response)
                             console.log(data);
                             const res  = JSON.stringify(data);
-                            $('.wystawiam-msg').remove();
-                            $('#wystaw-fakture').after(` < pre > ${res} < / pre > `);
+                            $('.issuing-msg').remove();
+                            $('.order_data_column .faktura-xl-issue-invoice').after(` < pre > ${res} < / pre > `);
+                            _this.html('✓');
                         }
                     );
+                }
+            )
+            $('.column-Faktura').click(
+                function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
                 }
             )
         }

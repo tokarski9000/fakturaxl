@@ -125,7 +125,6 @@ class Fakturaxl
          */
         include_once plugin_dir_path(dirname(__FILE__)).'admin/class-fakturaxl-admin-settings.php';
 
-
         $this->loader = new Fakturaxl_Loader();
 
     }//end load_dependencies()
@@ -166,7 +165,6 @@ class Fakturaxl
         $plugin_admin_settings = new Fakturaxl_Settings($this->get_plugin_name(), $this->get_version());
 
     }//end define_admin_hooks()
-
 
 
     /**

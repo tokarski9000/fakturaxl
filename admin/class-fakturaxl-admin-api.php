@@ -53,13 +53,13 @@ class Fakturaxl_Admin_Api
     {
         $this->plugin_name = $plugin_name;
         $this->version     = $version;
-        //Add button to order page view
+        // Add button to order page view
         add_action('woocommerce_admin_order_data_after_order_details', [$this, 'add_button'], 10, 1);
-        //Init ajax for issue invoice ajax
+        // Init ajax for issue invoice ajax
         add_action('wp_ajax_issue_invoice', [$this, 'issue_invoice']);
-        //Add invoce info column for order list view
+        // Add invoce info column for order list view
         add_filter('manage_edit-shop_order_columns', [$this, 'register_faktura_order_column'], 10, 1);
-        //Display invoce info in invoice column
+        // Display invoce info in invoice column
         add_action('manage_shop_order_posts_custom_column', [$this, 'display_faktura_column'], 10, 1);
 
     }//end __construct()
@@ -113,6 +113,11 @@ class Fakturaxl_Admin_Api
     }//end enqueue_scripts()
 
 
+    /**
+     * issue_invoice
+     *
+     * @return void
+     */
     public function issue_invoice()
     {
         check_ajax_referer('_wpnonce', 'security');
@@ -170,7 +175,6 @@ class Fakturaxl_Admin_Api
 
 			<typ_faktury>'.$invoice_type.'</typ_faktury>
 			<typ_faktur_podtyp>'.$invoice_subtype.'</typ_faktur_podtyp>
-			<obliczaj_sume_wartosci_faktury_wg>1</obliczaj_sume_wartosci_faktury_wg>
 			<numer_faktury></numer_faktury>
 			<data_wystawienia>'.$order->get_date_created()->format('Y-m-d').'</data_wystawienia>
 			<data_sprzedazy>'.$order->get_date_created()->format('Y-m-d').'</data_sprzedazy>
@@ -210,15 +214,15 @@ class Fakturaxl_Admin_Api
 			</nabywca>';
         // Iterate through order items
         foreach ($order->get_items() as $item_id => $item) {
-            $cena_brutto = ($item->get_total_tax() + $item->get_total());
-            $input_xml  .= '
+            $price_after_tax = floatval($item->get_total_tax() + $item->get_total());
+            $input_xml      .= '
 					<faktura_pozycje>
 						<nazwa>'.$item->get_name().'</nazwa>
 						<produkt_id>'.$item->get_variation_id().'</produkt_id>
 						<ilosc>'.$item->get_quantity().'</ilosc>
 						<jm>szt.</jm>
 						<vat>23</vat>
-						<wartosc_brutto>'.$cena_brutto.'</wartosc_brutto>
+						<wartosc_brutto>'.$price_after_tax.'</wartosc_brutto>
 					</faktura_pozycje>
 				';
         }
@@ -253,6 +257,7 @@ class Fakturaxl_Admin_Api
             update_post_meta($postID, 'dokument_id', $array_data['dokument_id']);
             $note = 'Faktura nr: '.$array_data['dokument_nr'].'<br>Dokument id: '.$array_data['dokument_id'];
             $order->add_order_note($note);
+            $array_data['total'] = $order->get_total();
         }
 
             echo json_encode($array_data);
@@ -269,7 +274,10 @@ class Fakturaxl_Admin_Api
      */
     public function add_button(WC_Order $order) : void
     {
-        echo '<div style="margin-top: 1rem;" class="button" id="wystaw-fakture">Wystaw Fakture</div>';
+        global $post;
+        echo '<div post-id="'.$post->ID.'" style="margin-top: 1rem;" class="faktura-xl-issue-invoice button">';
+        esc_html_e('Issue invoice', $this->plugin_name);
+        echo '</div>';
 
     }//end add_button()
 
@@ -294,7 +302,7 @@ class Fakturaxl_Admin_Api
      * @param  mixed $column
      * @return void
      */
-    public function display_faktura_column(array $column) : void
+    public function display_faktura_column(string $column) : void
     {
         global $post;
 
@@ -303,6 +311,10 @@ class Fakturaxl_Admin_Api
 
             if ($nr_faktury && strlen($nr_faktury) > 0) {
                 echo $nr_faktury;
+            } else {
+                echo '<div post-id="'.$post->ID.'" class="faktura-xl-issue-invoice button">';
+                esc_html_e('Issue invoice', $this->plugin_name);
+                echo '</div>';
             }
         }
 
