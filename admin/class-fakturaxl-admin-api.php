@@ -152,7 +152,9 @@ class Fakturaxl_Admin_Api
         if ($payment_title === 'Za pobraniem') {
             $payment = 'Opłata za pobraniem';
         }
-
+        if ($payment_title === 'Przelew bankowy') {
+            $payment = 'Przelew';
+        }
         // Workaround for other p24 payments not supported by FakturaXL
         if ($payment_title !== 'BLIK' || $payment_title !== 'Przelewy24') {
             if (str_contains($payment_method, 'przelewy24')) {
